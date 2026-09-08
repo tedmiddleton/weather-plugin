@@ -14,7 +14,7 @@
      ========================= */
 
   .today {
-    height: 50%;
+    height: 45%;
     box-sizing: border-box;
     display: flex;
     border-bottom: 2px solid #000;
@@ -86,19 +86,20 @@
 
   .today-details {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px 28px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    align-items: start;
   }
 
   .detail-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
   }
 
   .detail-value {
     margin-top: 2px;
-    font-size: 21px;
+    font-size: 18px;
     font-weight: 700;
   }
 
@@ -107,7 +108,7 @@
      ========================= */
 
   .forecast {
-    height: 50%;
+    height: 55%;
     box-sizing: border-box;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -173,6 +174,12 @@
     font-weight: 600;
   }
 
+  .day-precip {
+    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
   .footer {
     position: absolute;
     right: 10px;
@@ -195,6 +202,8 @@
 {% assign highs = daily.temperature_2m_max %}
 {% assign lows = daily.temperature_2m_min %}
 {% assign rain_chances = daily.precipitation_probability_max %}
+{% assign precip_amounts = daily.precipitation_sum %}
+{% assign today_precip = precip_amounts | first %}
 
 {% assign today_date = dates | first %}
 {% assign today_high = highs | first %}
@@ -429,13 +438,6 @@
         </div>
 
         <div>
-          <div class="detail-label">Rain chance</div>
-          <div class="detail-value">
-            {{ today_rain | round }}%
-          </div>
-        </div>
-
-        <div>
           <div class="detail-label">Humidity</div>
           <div class="detail-value">
             {{ current.relative_humidity_2m | round }}%
@@ -446,6 +448,20 @@
           <div class="detail-label">Wind</div>
           <div class="detail-value">
             {{ current.wind_speed_10m | round }} km/h
+          </div>
+        </div>
+
+        <div>
+          <div class="detail-label">Rain chance</div>
+          <div class="detail-value">
+            {{ today_rain | round }}%
+          </div>
+        </div>
+
+        <div>
+          <div class="detail-label">Precipitation</div>
+          <div class="detail-value">
+            {{ today_precip | round: 1 }} mm
           </div>
         </div>
 
@@ -467,6 +483,7 @@
       {% assign day_high = highs[i] %}
       {% assign day_low = lows[i] %}
       {% assign day_rain = rain_chances[i] %}
+      {% assign day_precip = precip_amounts[i] %}
 
       {% case day_code %}
         {% when 0 %}
@@ -666,6 +683,9 @@
           Rain {{ day_rain | round }}%
         </div>
 
+        <div class="day-precip">
+          {{ day_precip | round: 1 }} mm
+        </div>
       </div>
 
     {% endfor %}
